@@ -19,7 +19,7 @@ const characters: {[name: string]: Data} = {
 
 
 
-test("Scenario", () => {
+test("Insert", () => {
   const btree = new BTree(3);
   console.log("Created a B-Tree")
     
@@ -50,3 +50,24 @@ test("Scenario", () => {
 function insert(btree: BTree, name: string) {
   btree.insert(name, characters[name]);
 }
+
+test("Search", () => {
+  const btree = new BTree(3);
+  insert(btree, "Stan");
+  insert(btree, "Kyle");
+  insert(btree, "Eric");
+  insert(btree, "Kenny");
+  insert(btree, "Butters");
+  insert(btree, "Wendy");
+  insert(btree, "Jimmy");
+  insert(btree, "Token");
+  insert(btree, "Clyde");
+  insert(btree, "Craig");
+  insert(btree, "Tweak");
+
+  expect(btree.search("Alice")).toBeNull();
+  expect(btree.search("Kyle")).toBe(characters["Kyle"]);
+  expect(btree.search("Jimmy")).toBe(characters["Jimmy"]);
+  expect(btree.search("Butters")).toBe(characters["Butters"]);
+  expect(btree.search("Token")).toBe(characters["Token"]);
+});

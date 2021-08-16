@@ -26,6 +26,10 @@ class TreeNode {
     return this.keyArray;
   }
 
+  getData(index: number): Data {
+    return this.dataArray[index];
+  }
+
   getChild(index: number): TreeNode {
     return this.children[index];
   }
@@ -71,10 +75,17 @@ class TreeNode {
 export class BTree {
   private root: TreeNode;
   private maxElems: number;
+
   constructor(maxElems: number) {
     this.root = new TreeNode();
     this.maxElems = maxElems;
   }
+
+  /**
+   * @summary The time complexity is O(log N). Always insert a new element to a leaf node.
+   * @param key 
+   * @param data 
+   */
   insert(key: string, data: Data) {
     let node = this.root;
     const parents: TreeNode[] = [];
@@ -87,7 +98,6 @@ export class BTree {
       }
       node = node.getChild(i);
     }
-
     node.insert(key, data);
     while(node.size() > this.maxElems) {
       const {centerKey, centerData, left, right} = node.split();
@@ -107,6 +117,43 @@ export class BTree {
       }
     }
   }
+
+  /**
+   * @summary The time complexity is O(log N).
+   * @param key 
+   * @returns data if there is a corresponding entry in the tree, or null otherwise.
+   */
+  search(key: string): Data | null {
+    let node = this.root;
+    while (node.hasChildren()) {
+      // node is not a leaf
+      let index = 0;
+      for (; index < node.size(); index++) {
+        const k = node.getKey(index);
+        if (k === key)
+          return node.getData(index);
+        if (k > key) {
+          node = node.getChild(index);
+          break;
+        }
+      }
+      if (index === node.size()) {
+        node = node.getChild(index);
+      }
+    }
+    // node is a leaf
+    for (let index = 0; index < node.size(); index++) {
+      const k = node.getKey(index);
+      if (k === key) {
+        return node.getData(index);
+      }
+      if (k > key) {
+        break;
+      }
+    }
+    return null;
+  }
+
   toArrays(): string[][] {
     return this.root.toArrays();
   }
