@@ -45,12 +45,12 @@ test("pathToMaxKeyNode", () => {
   expect(root.children[0]!.pathToMaxKeyNode().pop()).toEqual(a);
 });
 
-test("deleteKeyAndData", () => {
+test("deleteKeyDataShift", () => {
   const largest = defaultTree().pathToMaxKeyNode().pop()!;
-  largest.deleteKeyAndData(0);
+  largest.deleteKeyDataShift(0);
   const expected = new TreeNode(4);
-  expected.keyArray[1] = 275;
-  expected.dataArray[1] = 275;
+  expected.keyArray[0] = 275;
+  expected.dataArray[0] = 275;
   expect(largest).toEqual(expected);
 });
 
@@ -89,6 +89,13 @@ test("toArrays", () => {
   expect(node.toArrays()).toEqual([
     [[85, 85], [200, 200], [null, null], [null, null]]
   ]);
+});
+
+test("search", () => {
+  const node = defaultTree();
+  expect(node.search(215)).toBe(215);
+  expect(node.search(216)).toBe(null);
+  expect(node.search(130)).toBe(130);
 });
 
 function defaultTree(): TreeNode {

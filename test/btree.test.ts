@@ -119,3 +119,118 @@ function defaultBTree(): BTree {
     btree.root = root;
     return btree;
   }
+
+  test("insert a duplicate key", () => {
+    const btree = defaultBTree();
+    btree.insert(175, 176);
+    expect(btree.root.children[1]!.toArrays()).toEqual([
+      [[130, 130], [175, 176], [null, null], [null, null]],
+      [[105, 105], [115, 115], [120, 120], [125, 125]],
+      [[135, 135], [145, 145], [160, 160], [165, 165]],
+      [[193, 193], [196, 196], [null, null], [null, null]]
+    ])
+  })
+
+  test("delete, 2 merge steps", () => {
+    const btree = defaultBTree();
+    btree.delete(85);
+    expect(btree.toArrays()).toEqual([
+      [ [ 200, 200 ], [ null, null ], [ null, null ], [ null, null ] ],
+      [ [ 30, 30 ], [ 75, 75 ], [ 130, 130 ], [ 175, 175 ] ],
+      [ [ 5, 5 ], [ 15, 15 ], [ 25, 25 ], [ null, null ] ],
+      [ [ 35, 35 ], [ 45, 45 ], [ 55, 55 ], [ 65, 65 ] ],
+      [ [ 105, 105 ], [ 115, 115 ], [ 120, 120 ], [ 125, 125 ] ],
+      [ [ 135, 135 ], [ 145, 145 ], [ 160, 160 ], [ 165, 165 ] ],
+      [ [ 193, 193 ], [ 196, 196 ], [ null, null ], [ null, null ] ],
+      [ [ 230, 230 ], [ 260, 260 ], [ null, null ], [ null, null ] ],
+      [ [ 205, 205 ], [ 215, 215 ], [ 225, 225 ], [ null, null ] ],
+      [ [ 235, 235 ], [ 245, 245 ], [ 255, 255 ], [ null, null ] ],
+      [ [ 265, 265 ], [ 275, 275 ], [ null, null ], [ null, null ] ]
+    ]);
+  });
+
+  test("delete, merge", () => {
+    const btree = defaultBTree();
+    btree.delete(190);
+    expect(btree.toArrays()).toEqual([
+      [ [ 85, 85 ], [ 200, 200 ], [ null, null ], [ null, null ] ],
+      [ [ 30, 30 ], [ 55, 55 ], [ null, null ], [ null, null ] ],
+      [ [ 5, 5 ], [ 15, 15 ], [ 25, 25 ], [ null, null ] ],
+      [ [ 35, 35 ], [ 45, 45 ], [ null, null ], [ null, null ] ],
+      [ [ 65, 65 ], [ 75, 75 ], [ null, null ], [ null, null ] ],
+      [ [ 130, 130 ], [ 175, 175 ], [ null, null ], [ null, null ] ],
+      [ [ 105, 105 ], [ 115, 115 ], [ 120, 120 ], [ 125, 125 ] ],
+      [ [ 135, 135 ], [ 145, 145 ], [ 160, 160 ], [ 165, 165 ] ],
+      [ [ 193, 193 ], [ 196, 196 ], [ null, null ], [ null, null ] ],
+      [ [ 230, 230 ], [ 260, 260 ], [ null, null ], [ null, null ] ],
+      [ [ 205, 205 ], [ 215, 215 ], [ 225, 225 ], [ null, null ] ],
+      [ [ 235, 235 ], [ 245, 245 ], [ 255, 255 ], [ null, null ] ],
+      [ [ 265, 265 ], [ 275, 275 ], [ null, null ], [ null, null ] ]
+    ]);
+  });
+
+  test("delete, right rotate", () => {
+    const btree = defaultBTree();
+    btree.delete(265);
+    expect(btree.toArrays()).toEqual([
+      [ [ 85, 85 ], [ 200, 200 ], [ null, null ], [ null, null ] ],
+      [ [ 30, 30 ], [ 55, 55 ], [ null, null ], [ null, null ] ],
+      [ [ 5, 5 ], [ 15, 15 ], [ 25, 25 ], [ null, null ] ],
+      [ [ 35, 35 ], [ 45, 45 ], [ null, null ], [ null, null ] ],
+      [ [ 65, 65 ], [ 75, 75 ], [ null, null ], [ null, null ] ],
+      [ [ 130, 130 ], [ 175, 175 ], [ null, null ], [ null, null ] ],
+      [ [ 105, 105 ], [ 115, 115 ], [ 120, 120 ], [ 125, 125 ] ],
+      [ [ 135, 135 ], [ 145, 145 ], [ 160, 160 ], [ 165, 165 ] ],
+      [ [ 193, 193 ], [ 196, 196 ], [ null, null ], [ null, null ] ],
+      [ [ 230, 230 ], [ 255, 255 ], [ null, null ], [ null, null ] ],
+      [ [ 205, 205 ], [ 215, 215 ], [ 225, 225 ], [ null, null ] ],
+      [ [ 235, 235 ], [ 245, 245 ], [ null, null ], [ null, null ] ],
+      [ [ 260, 260 ], [ 275, 275 ], [ null, null ], [ null, null ] ]
+    ]);
+  });
+
+  test("Simple delete", () => {
+    const btree = defaultBTree();
+    console.log(`default BTree`);
+    console.log(btree.toArrays());
+    btree.delete(205);
+    expect(btree.toArrays()).toEqual([
+      [ [ 85, 85 ], [ 200, 200 ], [ null, null ], [ null, null ] ],
+      [ [ 30, 30 ], [ 55, 55 ], [ null, null ], [ null, null ] ],
+      [ [ 5, 5 ], [ 15, 15 ], [ 25, 25 ], [ null, null ] ],
+      [ [ 35, 35 ], [ 45, 45 ], [ null, null ], [ null, null ] ],
+      [ [ 65, 65 ], [ 75, 75 ], [ null, null ], [ null, null ] ],
+      [ [ 130, 130 ], [ 175, 175 ], [ null, null ], [ null, null ] ],
+      [ [ 105, 105 ], [ 115, 115 ], [ 120, 120 ], [ 125, 125 ] ],
+      [ [ 135, 135 ], [ 145, 145 ], [ 160, 160 ], [ 165, 165 ] ],
+      [ [ 193, 193 ], [ 196, 196 ], [ null, null ], [ null, null ] ],
+      [ [ 230, 230 ], [ 260, 260 ], [ null, null ], [ null, null ] ],
+      [ [ 215, 215 ], [ 225, 225 ], [ null, null ], [ null, null ] ],
+      [ [ 235, 235 ], [ 245, 245 ], [ 255, 255 ], [ null, null ] ],
+      [ [ 265, 265 ], [ 275, 275 ], [ null, null ], [ null, null ] ]
+    ])
+  });
+
+  test("Delete, left rotation", () => {
+    const btree = defaultBTree();
+    console.log(`default BTree`);
+    console.log(btree.toArrays());
+    btree.delete(205);
+    btree.delete(215);
+    console.log(btree.toArrays());
+    expect(btree.toArrays()).toEqual([
+      [ [ 85, 85 ], [ 200, 200 ], [ null, null ], [ null, null ] ],
+      [ [ 30, 30 ], [ 55, 55 ], [ null, null ], [ null, null ] ],
+      [ [ 5, 5 ], [ 15, 15 ], [ 25, 25 ], [ null, null ] ],
+      [ [ 35, 35 ], [ 45, 45 ], [ null, null ], [ null, null ] ],
+      [ [ 65, 65 ], [ 75, 75 ], [ null, null ], [ null, null ] ],
+      [ [ 130, 130 ], [ 175, 175 ], [ null, null ], [ null, null ] ],
+      [ [ 105, 105 ], [ 115, 115 ], [ 120, 120 ], [ 125, 125 ] ],
+      [ [ 135, 135 ], [ 145, 145 ], [ 160, 160 ], [ 165, 165 ] ],
+      [ [ 193, 193 ], [ 196, 196 ], [ null, null ], [ null, null ] ],
+      [ [ 235, 235 ], [ 260, 260 ], [ null, null ], [ null, null ] ],
+      [ [ 225, 225 ], [ 230, 230 ], [ null, null ], [ null, null ] ],
+      [ [ 245, 245 ], [ 255, 255 ], [ null, null ], [ null, null ] ],
+      [ [ 265, 265 ], [ 275, 275 ], [ null, null ], [ null, null ] ]
+    ]);
+  });
