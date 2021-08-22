@@ -79,6 +79,18 @@ test("search", () => {
   expect(root.where(250)).toEqual([-1, 2]);
 });
 
+test("toArrays", () => {
+  const node = new TreeNode(4);
+  node.insert(200, 200);
+  expect(node.toArrays()).toEqual([
+    [[200, 200], [null, null], [null, null], [null, null]]
+  ]);
+  node.insert(85, 85);
+  expect(node.toArrays()).toEqual([
+    [[85, 85], [200, 200], [null, null], [null, null]]
+  ]);
+});
+
 function defaultTree(): TreeNode {
   const root = new TreeNode(4);
   const n00 = new TreeNode(4);

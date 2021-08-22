@@ -26,7 +26,7 @@ export class TreeNode {
 
   // O(k)
   hasChildren() {
-    return this.children.some(child => child !== null)
+    return this.children.some(child => child != null)
   }
 
   // O(kh)
@@ -47,10 +47,19 @@ export class TreeNode {
     this.dataArray[index] = null;
   }
 
-  // O(k)
+  /**
+   * Overwites data when the key already exists in the tree.
+   * @param key 
+   * @param data 
+   * @returns 
+   */
   insert(key: Key, data: Data | null) {
     let pos = 0;
     for(; pos < this.numOfElements(); pos++) {
+      if (this.keyArray[pos]! === key) {
+        this.dataArray[pos] = data;
+        return;
+      }
       if (this.keyArray[pos]! > key) {
         break;
       }
@@ -131,7 +140,7 @@ export class TreeNode {
 
 export class BTree {
   private nodeCapacity: number;
-  private root: TreeNode;
+  root: TreeNode;
 
   constructor(nodeCapacity: number) {
     this.nodeCapacity = nodeCapacity;
@@ -139,14 +148,13 @@ export class BTree {
   }
 
   /**
-   * @summary The time complexity is O(log N). Always insert a new element to a leaf node.
+   * @summary The time complexity is O(log N).
    * @param key 
    * @param data 
    */
   insert(key: Key, data: Data) {
     let node = this.root;
     const parents: TreeNode[] = [];
-    
     while(node.hasChildren()) {
       parents.push(node);
       const [keyIndex, childIndex] = node.where(key);
@@ -167,19 +175,25 @@ export class BTree {
         newRoot.children[0] = left;
         newRoot.children[1] = right;
         this.root = newRoot;
+        return;
       } else {
         // Find the child index at the parent
         const [keyIndex, childIndex] = parent.where(centerKey);
         if (keyIndex !== -1) {
-          parent.keyArray.splice(keyIndex+1, 0, centerKey);
-          parent.dataArray.splice(keyIndex+1, 0, centerData);
-          parent.children[keyIndex+1] = left;
-          parent.children.splice(keyIndex+2, 0, right);
+          parent.dataArray[keyIndex] = centerData;
         } else {
-          parent.keyArray.splice(childIndex, 0, centerKey);
-          parent.dataArray.splice(childIndex, 0, centerData);
+          parent.insert(centerKey, centerData);
           parent.children[childIndex] = left;
-          parent.children.splice(childIndex+1, 0, right);
+          let prev = right;
+          for (let i = childIndex+1; i <= parent.numOfElements(); i++) {
+            const temp = parent.children[i];
+            parent.children[i] = prev;
+            if (temp === null) {
+              break;
+            } else {
+              prev = temp;
+            }
+          }
         }
       }
       node = parent!;
